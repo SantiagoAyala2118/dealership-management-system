@@ -1,0 +1,29 @@
+services:
+  # Tu aplicación (Backend)
+  api:
+    build: .
+    env_file:
+      - .env
+    environment:
+      # OJO AQUÍ: El host no es 'localhost', es 'db' (el nombre del servicio de abajo)
+      - DATABASE_URL=postgresql://santiago:secret123@db:5432/concesionaria
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  # La Base de Datos
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: santiago
+      POSTGRES_PASSWORD: secret123
+      POSTGRES_DB: concesionaria
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:
