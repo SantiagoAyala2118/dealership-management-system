@@ -1,0 +1,47 @@
+// prisma/schema.prisma
+
+generator client {
+  provider      = "prisma-client-js" // OJO: Es 'prisma-client-js', no 'prisma-client'
+  // IMPORTANTE: Esto permite que funcione en tu Windows y en el Docker (Linux)
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// --- AQUI EMPIEZA EL MODELADO DE LA BD ---
+
+// 1. Modelo de Usuario (Para autenticación y roles)
+model Usuario {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  email     String   @unique
+  password  String   // Aquí guardaremos la contraseña hasheada
+  rol       String   @default("USER") // "ADMIN" o "USER"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relaciones
+  autos     Auto[]   // Un usuario (vendedor/admin) puede cargar muchos autos
+}
+
+// 2. Modelo de Auto (El producto principal)
+model Auto {
+  id          Int      @id @default(autoincrement())
+  marca       String
+  modelo      String
+  anio        Int
+  color       String?  // El '?' significa que es opcional
+  precio      Float
+  descripcion String?
+  imagenUrl   String?  // Para guardar la foto del auto más adelante
+  estado      String   @default("DISPONIBLE") // DISPONIBLE, VENDIDO, RESERVADO
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relación con Usuario (quién creó el registro)
+  usuarioId   Int
+  usuario     Usuario  @relation(fields: [usuarioId], references: [id])
+}
