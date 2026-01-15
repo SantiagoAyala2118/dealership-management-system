@@ -13,35 +13,70 @@ datasource db {
 
 // --- AQUI EMPIEZA EL MODELADO DE LA BD ---
 
-// 1. Modelo de Usuario (Para autenticación y roles)
+// prisma/schema.prisma
+
+// ... (toda la configuración de generator y datasource queda igual) ...
+
+// 1. USUARIOS (Vendedores y Admins)
 model Usuario {
   id        Int      @id @default(autoincrement())
   nombre    String
   email     String   @unique
-  password  String   // Aquí guardaremos la contraseña hasheada
-  rol       String   @default("USER") // "ADMIN" o "USER"
+  password  String
+  rol       Rol      @default(VENDEDOR) // Usamos un Enum para limitar opciones
+  ventas    Venta[]  // Un vendedor realiza muchas ventas
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  // Relaciones
-  autos     Auto[]   // Un usuario (vendedor/admin) puede cargar muchos autos
 }
 
-// 2. Modelo de Auto (El producto principal)
+// 2. CLIENTES (Quienes compran)
+model Cliente {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  apellido  String
+  dni       String   @unique // Importante para no duplicar clientes
+  telefono  String?
+  email     String?
+  compras   Venta[]  // Un cliente puede hacer muchas compras a lo largo del tiempo
+  createdAt DateTime @default(now())
+}
+
+// 3. AUTOS (El inventario)
 model Auto {
   id          Int      @id @default(autoincrement())
   marca       String
   modelo      String
   anio        Int
-  color       String?  // El '?' significa que es opcional
-  precio      Float
-  descripcion String?
-  imagenUrl   String?  // Para guardar la foto del auto más adelante
-  estado      String   @default("DISPONIBLE") // DISPONIBLE, VENDIDO, RESERVADO
+  precioLista Float    // Precio sugerido
+  estado      EstadoAuto @default(DISPONIBLE) // La clave del sistema
+  venta       Venta?   // Relación opcional: Si no se vendió, esto es null
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+}
 
-  // Relación con Usuario (quién creó el registro)
-  usuarioId   Int
+// 4. VENTAS (El corazón del negocio)
+model Venta {
+  id          Int      @id @default(autoincrement())
+  fecha       DateTime @default(now())
+  precioFinal Float    // Puede ser distinto al precio de lista (hubo negociación)
+  
+  // Relaciones
+  usuarioId   Int      // Quién lo vendió
   usuario     Usuario  @relation(fields: [usuarioId], references: [id])
+  
+  clienteId   Int      // Quién lo compró
+  cliente     Cliente  @relation(fields: [clienteId], references: [id])
+  
+  autoId      Int      @unique // Un auto solo puede estar en UNA venta
+  auto        Auto     @relation(fields: [autoId], references: [id])
+}
+
+// ENUMS (Opciones fijas para evitar errores de tipeo)
+enum Rol {
+  ADMIN
+  VENDEDOR
+}
+
+enum EstadoAuto {
+  DISPONIBLE
+  RESERVADO
+  VENDIDO
 }
