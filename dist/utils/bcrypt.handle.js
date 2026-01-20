@@ -1,0 +1,12 @@
+import bcrypt from "bcryptjs";
+const saltRounds = process.env.SALT_ROUNDS || 10;
+//* Funcion para hashear la contrasenia del usuario
+export const hashPassword = async (password) => {
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    return hashedPassword;
+};
+//* Funcion para comparar las contrasenias
+export const comparePassword = async (password, hashedPassword) => {
+    const verified = await bcrypt.compare(password, hashedPassword);
+    return verified;
+};
