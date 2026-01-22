@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-const saltRounds = process.env.SALT_ROUNDS || 10;
+const saltRounds = Number(process.env.SALT_ROUNDS) || 10;
 //* Funcion para hashear la contrasenia del usuario
 export const hashPassword = async (password) => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
