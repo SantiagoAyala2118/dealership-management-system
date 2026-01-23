@@ -56,3 +56,21 @@ export const loginController = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const authorizationTest = async (req: Request, res: Response) => {
+  try {
+    const user = (req as any).user;
+
+    res.status(200).json({
+      ok: true,
+      msg: "El testeo funciono bro, sirve el middleware",
+      user: user,
+    });
+  } catch (err) {
+    console.error("ERROR", err);
+    return res.status(500).json({
+      ok: false,
+      msg: "Server error",
+    });
+  }
+};
