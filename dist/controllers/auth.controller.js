@@ -49,3 +49,20 @@ export const loginController = async (req, res) => {
         });
     }
 };
+export const authorizationTest = async (req, res) => {
+    try {
+        const user = req.user;
+        res.status(200).json({
+            ok: true,
+            msg: "El testeo funciono bro, sirve el middleware",
+            user: user,
+        });
+    }
+    catch (err) {
+        console.error("ERROR", err);
+        return res.status(500).json({
+            ok: false,
+            msg: "Server error",
+        });
+    }
+};
