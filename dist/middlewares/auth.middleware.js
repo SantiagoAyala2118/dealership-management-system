@@ -7,7 +7,6 @@ export const authMiddleware = async (req, res, next) => {
         const jwt = authHeader.split(" ").pop();
         //* Ejecuto la funcion para verificar si el token es mio
         const token = await verifyToken(`${jwt}`);
-        console.log(token);
         if (!token) {
             return res.status(401).json({
                 ok: false,
