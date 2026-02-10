@@ -21,7 +21,6 @@ export const authMiddleware = async (
 
     //* Ejecuto la funcion para verificar si el token es mio
     const token = await verifyToken(`${jwt}`);
-    console.log(token);
 
     if (!token) {
       return res.status(401).json({
