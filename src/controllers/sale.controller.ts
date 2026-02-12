@@ -33,6 +33,18 @@ export const createSaleController = async (req: ExtRequest, res: Response) => {
           msg: "El precio de venta debe ser mayor a 0",
         });
 
+      case "INVALID_DISCOUNT_VALUE":
+        return res.status(400).json({
+          ok: false,
+          msg: "El descuento maximo es de hasta el 10%",
+        });
+
+      case "POSSIBLE_PRICE_MISTAKE":
+        return res.status(400).json({
+          ok: false,
+          msg: "Posible error de tipeo en el precio",
+        });
+
       case "CAR_NOT_FOUND":
         return res.status(404).json({
           ok: false,
