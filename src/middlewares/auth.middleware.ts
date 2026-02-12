@@ -3,7 +3,7 @@ import { verifyToken } from "../utils/jwt.handle.js";
 import type { JwtPayload } from "jsonwebtoken";
 
 //* Interface para agregarle un campo al tipo Request y que TS no se queje
-interface ExtRequest extends Request {
+export interface ExtRequest extends Request {
   userLogged?: string | JwtPayload;
 }
 
