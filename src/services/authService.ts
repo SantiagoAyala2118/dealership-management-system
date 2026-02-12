@@ -23,7 +23,7 @@ export const register = async ({ email, password, username }: registerData) => {
   const existingEmail = await prisma.usuario.findUnique({ where: { email } });
 
   if (existingEmail) {
-    throw new Error("Email ya existente");
+    throw new Error("EMAIL_ALREADY_EXISTS");
   }
 
   const hashedPassword = await hashPassword(password);

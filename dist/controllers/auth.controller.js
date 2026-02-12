@@ -1,4 +1,5 @@
 import { login, register } from "../services/authService.js";
+import { error } from "node:console";
 //* Controlador de registro
 export const registerController = async (req, res) => {
     try {
@@ -13,6 +14,13 @@ export const registerController = async (req, res) => {
         }
     }
     catch (err) {
+        const errorMessage = err.message;
+        if (errorMessage == "EMAIL_ALREADY_EXISTS") {
+            return res.status(400).json({
+                ok: false,
+                msg: "Ese email ya se encuentra en uso",
+            });
+        }
         console.error("error", err);
         return res.status(500).json({
             ok: false,
@@ -34,9 +42,9 @@ export const loginController = async (req, res) => {
         }
     }
     catch (err) {
-        if (err.message === "Credenciales incorrectas" ||
-            err.message === "Credenciales invalidas") {
-            //TODO Esto deberia ir en un middleware
+        const errorMessage = err.message;
+        if (errorMessage === "Credenciales incorrectas" ||
+            errorMessage === "Credenciales invalidas") {
             return res.status(401).json({
                 ok: false,
                 msg: "Email o contraseña incorrectos",
