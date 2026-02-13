@@ -1,4 +1,4 @@
-//* MIDDLEWARE DE VALIDACION PARECIDO AL DE EXPRESS-VALIDATOR, PERO ESTE TIENE TODO EN UN SOLO MIDDLEWARE
+//? MIDDLEWARE DE VALIDACION PARECIDO AL DE EXPRESS-VALIDATOR, PERO ESTE TIENE TODO EN UN SOLO MIDDLEWARE
 import { ZodType, ZodError } from "zod";
 //* Funcion encargada de recibir el esquema
 export const validateSchema = (schema) => {
